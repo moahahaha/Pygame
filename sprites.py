@@ -10,6 +10,9 @@ enemy_img = pg.image.load("Enemy.png")
 enemy_img = pg.transform.scale(enemy_img,(100,100))
 
 
+
+player_left_img = pg.transform.flip(player_img, True, False)
+
 class Player(pg.sprite.Sprite):
     def __init__(self):
         pg.sprite.Sprite.__init__(self)
@@ -19,7 +22,15 @@ class Player(pg.sprite.Sprite):
         self.rect.center = self.pos
         self.speed = 3
 
+        self.image_left = player_left_img
+       
+
     def update(self):
+        self.rect.center = self.pos
+
+        self.move_to =vec(pg.mouse.get_pos())
+        self.move_vector = self.move_to - self.pos
+        self.pos += self.move_vector.normalize() * self.speed
         self.rect.center = self.pos
 
         keys =pg.key.get_pressed()
@@ -29,8 +40,10 @@ class Player(pg.sprite.Sprite):
             self.pos.y += self.speed
         if keys[pg.K_d]:
             self.pos.x += self.speed
+            self.image = player_img
         if keys[pg.K_a]:
             self.pos.x -= self.speed
+            self.image = player_left_img
 
         if self.pos.x < 40:
             self.pos.x = 40
