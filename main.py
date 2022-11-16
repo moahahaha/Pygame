@@ -11,7 +11,7 @@ BLACK = (0,0,0)
 GRØNN_BLÅ = (100,200,150)
 WIDTH = 1000
 HEIGHT = 1000
-herolife = 5
+
 
 
 screen = pg.display.set_mode((HEIGHT,WIDTH))
@@ -32,8 +32,6 @@ FPS = 120
 clock = pg.time.Clock()
 
     
-comic_sans30 = pg.font.SysFont("Comic Sans MS", 30)
-print(herolife)
 
 playing = True
 while playing: 
@@ -42,20 +40,22 @@ while playing:
         if event.type == pg.QUIT:
             playing = False 
 
-
-    text_player_hp = comic_sans30.render(str(herolife), False, (BLACK))
-    screen.blit(text_player_hp,(10,10))
-
+    
     screen.fill(GRØNN_BLÅ)
+
+    comic_sans30 = pg.font.SysFont("Comic Sans MS", 30)
 
     all_sprites.update()
     
 
     hits = pg.sprite.spritecollide(blueguy, enemy_group, True)
     if hits:
-        herolife -= 1
+        blueguy.life -= 1
+        print(blueguy.life)
+        if blueguy.life <= 0:
+            blueguy.kill()
 
-        
+    
 
     if len(enemy_group) < 10:
         bunny = Enemy()
@@ -64,6 +64,9 @@ while playing:
 
     all_sprites.draw(screen)
 
+    text_hp = comic_sans30.render(str(blueguy.life), False, BLACK)
+    screen.blit(text_hp(10,10))
+        
 
     pg.display.update()
     

@@ -21,6 +21,7 @@ class Player(pg.sprite.Sprite):
         self.pos = vec(100,100)
         self.rect.center = self.pos
         self.speed = 3
+        self.life = 5
 
         self.image_left = player_left_img
        
