@@ -9,12 +9,9 @@ pg.init()
 WHITE = (255,255,255)
 BLACK = (0,0,0)
 GRØNN_BLÅ = (100,200,150)
+
 WIDTH = 1000
 HEIGHT = 1000
-
-
-
-screen = pg.display.set_mode((HEIGHT,WIDTH))
 
 
 all_sprites = pg.sprite.Group()
@@ -23,15 +20,28 @@ enemy_group = pg.sprite.Group()
 
 blueguy = Player()
 bunny = Enemy()
-all_sprites.add(blueguy, bunny)
+hotdog = Food()
+all_sprites.add(blueguy, bunny, hotdog)
 enemy_group.add(bunny)
 
 
 
+
+screen = pg.display.set_mode((HEIGHT,WIDTH))
+bg = pg.image.load("Background forest.jpg")
+bg = pg.transform.scale(bg, (1000, 1000))
+
+
+score = 0
+
 FPS = 120
 clock = pg.time.Clock()
 
-    
+comic_sans30 = pg.font.SysFont("Comic Sans MS", 30)
+  
+
+
+
 
 playing = True
 while playing: 
@@ -39,13 +49,17 @@ while playing:
     for event in pg.event.get():
         if event.type == pg.QUIT:
             playing = False 
+            
+            
+    text_player_hp = comic_sans30.render(str(blueguy.life), False, WHITE)  
+    text_score_hp = comic_sans30.render(str(score), False, WHITE) 
 
+    screen.blit(bg,(0,0))
+  
     
-    screen.fill(GRØNN_BLÅ)
-
-    comic_sans30 = pg.font.SysFont("Comic Sans MS", 30)
-
     all_sprites.update()
+    
+    
     
 
     hits = pg.sprite.spritecollide(blueguy, enemy_group, True)
@@ -54,18 +68,32 @@ while playing:
         print(blueguy.life)
         if blueguy.life <= 0:
             blueguy.kill()
+            blueguy = Player()
+            all_sprites.add(blueguy)
+            score = 0
 
-    
 
-    if len(enemy_group) < 10:
+
+
+
+    for enemy in enemy_group:
+        if enemy.pos.x < -100:
+            enemy.kill()
+            score += 100
+
+
+
+    if len(enemy_group) < 7:
         bunny = Enemy()
         all_sprites.add(bunny)
         enemy_group.add(bunny)
 
     all_sprites.draw(screen)
 
-    text_hp = comic_sans30.render(str(blueguy.life), False, BLACK)
-    screen.blit(text_hp(10,10))
+
+    screen.blit(text_player_hp,(10,10))
+    screen.blit(text_score_hp,(900,10))
+    
         
 
     pg.display.update()

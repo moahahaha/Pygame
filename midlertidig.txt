@@ -1,0 +1,6 @@
+screen.blit(bg,(i,0))
+    screen.blit(bg,(WIDTH+1,0))
+    if (i == -WIDTH):
+        screen.blit(bg,(WIDTH+i,0))
+        i=0
+    i -= 1
