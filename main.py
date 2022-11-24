@@ -64,7 +64,7 @@ while playing:
     hits = pg.sprite.spritecollide(blueguy, enemy_group, True)
     if hits:
         blueguy.life -= 1
-        print(blueguy.life)
+
         if blueguy.life <= 0:
             blueguy.kill()
             blueguy = Player()

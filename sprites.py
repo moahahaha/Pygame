@@ -9,13 +9,19 @@ player_img = pg.transform.scale(player_img,(100,100))
 enemy_img = pg.image.load("Enemy.png")
 enemy_img = pg.transform.scale(enemy_img,(100,100))
 
+food_img = pg.image.load("hotdog.png")
+food_img = pg.transform.scale(food_img,(50,50))
+
+heart_img = pg.image.load("heart.png")
+heart_img = pg.transform.scale(heart_img,(50,50))
 
 
 player_left_img = pg.transform.flip(player_img, True, False)
 
 class Player(pg.sprite.Sprite):
     def __init__(self):
-        
+        pg.sprite.Sprite.__init__(self)
+
         self.image = player_img
         self.rect = self.image.get_rect()
         self.pos = vec(100,100)
@@ -62,7 +68,7 @@ class Enemy(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self)
         self.image = enemy_img
         self.rect = self.image.get_rect()
-        self.pos = vec(randint(1000,2000),randint(0,950))
+        self.pos = vec(randint(1000,2000),randint(10,950))
         self.rect.center = self.pos
         self.speed = 5
 
@@ -73,3 +79,31 @@ class Enemy(pg.sprite.Sprite):
         self.pos.x -= self.speed
 
             
+class Food(pg.sprite.Sprite):
+    def __init__(self):
+        pg.sprite.Sprite.__init__(self)
+        self.image = food_img
+        self.rect = self.image.get_rect()
+        self.pos = vec(randint(1000,2000),randint(10,950))
+        self.rect.center = self.pos
+        self.speed = 5
+    
+    def update(self):
+        self.rect.center = self.pos
+        
+        self.pos.x -= self.speed
+        
+        
+class Heart(pg.sprite.Sprite):
+    def __init__(self):
+        pg.sprite.Sprite.__init__(self)
+        self.image = heart_img
+        self.rect = self.image.get_rect()
+        self.pos = vec(randint(2000,3000),randint(10,950))
+        self.rect.center = self.pos
+        self.speed = 5
+        
+    def update(self):
+        self.rect.center = self.pos
+        
+        self.pos.x -= self.speed

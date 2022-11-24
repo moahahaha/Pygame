@@ -1,4 +1,5 @@
 import pygame as pg
+
 from sprites import*
 
 
@@ -18,7 +19,7 @@ class Game():
         self.HEIGHT = 1000
         
         self.screen = pg.display.set_mode((self.HEIGHT,self.WIDTH))
-        self.bg = pg.image.load("Background forest.jpg")
+        self.bg = pg.image.load("background.jpg")
         self.bg = pg.transform.scale(self.bg, (self.HEIGHT, self.WIDTH))
 
         self.comic_sans30 = pg.font.SysFont("Comic Sans MS", 30)
@@ -35,12 +36,13 @@ class Game():
         
         self.all_sprites = pg.sprite.Group()
         self.enemy_group = pg.sprite.Group()
+        self.food_group = pg.sprite.Group()
+        self.heart_group = pg.sprite.Group()
 
         self.blueguy = Player()
-        self.bunny = Enemy()
         
-        self.all_sprites.add(self.blueguy, self.bunny)
-        self.enemy_group.add(self.bunny)
+        self.all_sprites.add(self.blueguy)
+    
         
         
         self.score = 0
@@ -60,10 +62,7 @@ class Game():
                 if event.type == pg.QUIT:
                     playing = False 
                     
-                if event.type == pg.KEYDOWN:
-                    if event.key == pg.K_r:
-                        self.new 
-                    
+                
 
             self.screen.blit(self.bg,(0,0))
         
@@ -71,31 +70,61 @@ class Game():
             self.all_sprites.update()
             
             
-            
 
             hits = pg.sprite.spritecollide(self.blueguy, self.enemy_group, True)
             if hits:
-                blueguy.life -= 1
-                print(blueguy.life)
-                if blueguy.life <= 0:
-                    blueguy.kill()
-                    blueguy = Player()
-                    self.all_sprites.add(blueguy)
-                    score = 0
+                self.score -= 50
+                self.blueguy.life -= 1
+                if self.blueguy.life <= 0:
+                    self.blueguy.kill()
+                    self.blueguy = Player()
+                    self.all_sprites.add(self.blueguy)
+                    self.score = 0
+                    
+            hits = pg.sprite.spritecollide(self.blueguy, self.food_group, True)
+            if hits:
+                self.score += 100
+
+            hits = pg.sprite.spritecollide(self.blueguy, self.heart_group, True)
+            if hits:
+                self.blueguy.life += 1
+
 
 
 
             for enemy in self.enemy_group:
                 if enemy.pos.x < -100:
                     enemy.kill()
-                    score += 100
-
-
-
+                  
             if len(self.enemy_group) < 7:
                 bunny = Enemy()
                 self.all_sprites.add(bunny)
                 self.enemy_group.add(bunny)
+                
+            
+        
+        
+            for food in self.food_group:
+                if food.pos.x < -100:
+                    food.kill()        
+            
+            if len(self.food_group) < 2:
+                hotdog = Food()
+                self.all_sprites.add(hotdog)
+                self.food_group.add(hotdog)
+
+
+
+            for heart in self.heart_group:
+                if heart.pos.x < -100:
+                    heart.kill()
+                    
+            if len(self.heart_group) < 1:
+                heart = Heart()
+                self.all_sprites.add(heart)
+                self.heart_group.add(heart)
+
+
 
             self.all_sprites.draw(self.screen)
 
@@ -103,7 +132,9 @@ class Game():
             self.screen.blit(self.text_player_hp,(10,10))
             self.screen.blit(self.text_score_hp,(900,10))
             
-                
+            self.text_player_hp = self.comic_sans30.render(str(self.blueguy.life), False, self.WHITE)  
+            self.text_score_hp = self.comic_sans30.render(str(self.score), False,  self.WHITE) 
+        
 
             pg.display.update()
 
