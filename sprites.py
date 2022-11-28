@@ -4,13 +4,28 @@ vec = pg.math.Vector2
 
 
 player_img = pg.image.load("Player.PNG")
-player_img = pg.transform.scale(player_img,(100,100))
+player_img = pg.transform.scale(player_img,(70,70))
+
+RUNNING1 = pg.image.load("Run1.png")
+RUNNING2 = pg.image.load("Run2.png")
+RUNNING3 = pg.image.load("Run3.png")
+RUNNING4 = pg.image.load("Run4.png")
+RUNNING5 = pg.image.load("Run5.png")
+RUNNING6 = pg.image.load("Run6.png")
+
+
+
+
+running_frames = [RUNNING1, RUNNING2, RUNNING3, RUNNING4, RUNNING5, RUNNING6]
+for frame in running_frames:
+    frame = pg.transform.scale(frame, (500,500))
+
 
 enemy_img = pg.image.load("Enemy.png")
 enemy_img = pg.transform.scale(enemy_img,(100,100))
 
 food_img = pg.image.load("hotdog.png")
-food_img = pg.transform.scale(food_img,(50,50))
+food_img = pg.transform.scale(food_img,(60,60))
 
 heart_img = pg.image.load("heart.png")
 heart_img = pg.transform.scale(heart_img,(50,50))
@@ -22,18 +37,29 @@ class Player(pg.sprite.Sprite):
     def __init__(self):
         pg.sprite.Sprite.__init__(self)
 
+        self.current_frame = 0
+        self.last_update = 0
         self.image = player_img
         self.rect = self.image.get_rect()
         self.pos = vec(100,100)
         self.rect.center = self.pos
         self.speed = 4
         self.life = 5
+        
+        self.running = False
+        self.left = False
+        
+        self.running_frames = running_frames
 
         self.image_left = player_left_img
        
 
     def update(self):
+        
         self.rect.center = self.pos
+        
+        
+        
         '''
         self.move_to =vec(pg.mouse.get_pos())
         self.move_vector = self.move_to - self.pos
@@ -41,16 +67,21 @@ class Player(pg.sprite.Sprite):
         self.rect.center = self.pos
         '''
         keys =pg.key.get_pressed()
+        
         if keys[pg.K_w]:
             self.pos.y -= self.speed
+            self.running = True
         if keys[pg.K_s]:
             self.pos.y += self.speed
+            self.running = True
         if keys[pg.K_d]:
             self.pos.x += self.speed
-            self.image = player_img
+            self.running = True
+            self.left = False
         if keys[pg.K_a]:
             self.pos.x -= self.speed
-            self.image = player_left_img
+            self.running = True
+            self.left = True
 
         if self.pos.x < 40:
             self.pos.x = 40
@@ -60,7 +91,23 @@ class Player(pg.sprite.Sprite):
             self.pos.y = 40
         if self.pos.y > 940:
             self.pos.y = 940
+      
+        self.animate()
+      
+
+    def animate(self):
+        now = pg.time.get_ticks()
         
+        if self.running:
+            if now - self.last_update > 350:
+                self.last_update = now
+                self.current_frame = (self.current_frame + 1) % len(self.running_frames)
+                self.image = self.running_frames[self.current_frame]
+                self.rect = self.image.get_rect()
+        
+                if self.left:
+                    self.image = pg.transform.flip(self.image, True, False)
+    
 
 
 class Enemy(pg.sprite.Sprite):

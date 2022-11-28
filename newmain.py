@@ -88,6 +88,9 @@ class Game():
             hits = pg.sprite.spritecollide(self.blueguy, self.heart_group, True)
             if hits:
                 self.blueguy.life += 1
+                if self.blueguy.life >=  5:
+                    self.blueguy.life = 5
+                
 
 
 
