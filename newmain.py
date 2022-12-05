@@ -57,7 +57,7 @@ class Game():
     def run(self):
         playing = True
         while playing:
-            self.clock.tick(self.FPS)
+            self.clock.tick(self.FPS)                                     
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     playing = False 
@@ -73,6 +73,7 @@ class Game():
 
             hits = pg.sprite.spritecollide(self.blueguy, self.enemy_group, True)
             if hits:
+                self.hurting = True
                 self.score -= 50
                 self.blueguy.life -= 1
                 if self.blueguy.life <= 0:
