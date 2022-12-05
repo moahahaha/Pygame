@@ -141,4 +141,4 @@ class Game():
 
             pg.display.update()
 
-g = Game()
+g = Game()     

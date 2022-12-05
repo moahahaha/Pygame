@@ -63,8 +63,7 @@ class Player(pg.sprite.Sprite):
 
     def update(self):
         
-        self.rect.center = self.pos
-        
+            
         
         
         '''
@@ -100,7 +99,7 @@ class Player(pg.sprite.Sprite):
             self.pos.y = 940
       
         self.animate()
-      
+        self.rect.center = self.pos
 
     def animate(self):
         now = pg.time.get_ticks()
@@ -114,7 +113,7 @@ class Player(pg.sprite.Sprite):
         
                 if self.left:
                     self.image = pg.transform.flip(self.image, True, False)
-    
+        
 
 
 class Enemy(pg.sprite.Sprite):
