@@ -68,6 +68,8 @@ class Player(pg.sprite.Sprite):
         self.running = False
         self.left = False
         
+        self.last_hurt = 0
+        
         self.running_frames = running_frames
         self.hurting_frames = hurting_frames
 
@@ -115,8 +117,18 @@ class Player(pg.sprite.Sprite):
 
     def animate(self):
         now = pg.time.get_ticks()
-        
-        if self.running:
+        if self.hurting:
+            if now - self.last_update > 100:
+                self.last_update = now
+                self.current_frame = (self.current_frame + 1) % len(self.hurting_frames)
+                self.image = self.hurting_frames[self.current_frame]
+                self.rect = self.image.get_rect()
+                
+            if self.last_hurt + 1000 < now:
+                print("end hurt")
+                self.hurting = False
+                
+        elif self.running:
             if now - self.last_update > 100:
                 self.last_update = now
                 self.current_frame = (self.current_frame + 1) % len(self.running_frames)
@@ -126,12 +138,8 @@ class Player(pg.sprite.Sprite):
                 if self.left:
                     self.image = pg.transform.flip(self.image, True, False)
         
-        if self.hurting:
-            if now - self.last_update > 100:
-                self.last_update = now
-                self.current_frame = (self.current_frame + 1) % len(self.hurting_frames)
-                self.image = self.hurting_frames[self.current_frame]
-                self.rect = self.image.get_rect()
+        
+        '''Lag elif standing'''           
         
 
 class Enemy(pg.sprite.Sprite):

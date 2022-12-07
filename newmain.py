@@ -73,7 +73,8 @@ class Game():
 
             hits = pg.sprite.spritecollide(self.blueguy, self.enemy_group, True)
             if hits:
-                self.hurting = True
+                self.blueguy.hurting = True
+                self.blueguy.last_hurt = pg.time.get_ticks()
                 self.score -= 50
                 self.blueguy.life -= 1
                 if self.blueguy.life <= 0:
