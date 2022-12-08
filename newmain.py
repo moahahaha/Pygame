@@ -55,6 +55,7 @@ class Game():
     
     
     def run(self):
+        i = 0
         playing = True
         while playing:
             self.clock.tick(self.FPS)                                     
@@ -63,8 +64,12 @@ class Game():
                     playing = False 
                     
                 
-
-            self.screen.blit(self.bg,(0,0))
+            self.screen.blit(self.bg,(i,0))
+            self.screen.blit(self.bg,(self.WIDTH+1,0))
+            if (i == -self.WIDTH):
+                self.screen.blit(self.bg,(self.WIDTH+i,0))
+                i = 0
+            i-=1
         
             
             self.all_sprites.update()

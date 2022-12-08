@@ -35,6 +35,14 @@ HURT4 = pg.transform.scale(HURT4,(70,70))
 
 hurting_frames = [HURT1, HURT2, HURT3, HURT4]
 
+STANDING1 = pg.image.load("Stand1.png")
+STANDING1 = pg.transform.scale(STANDING1,(70,70))
+STANDING2 = pg.image.load("Stand1.png")
+STANDING2 = pg.transform.scale(STANDING2,(70,70))
+
+standing_frames = [STANDING1, STANDING2]
+
+
 '''
 for frame in running_frames:
     frame = pg.transform.scale(frame, (500,500))
@@ -64,6 +72,7 @@ class Player(pg.sprite.Sprite):
         self.speed = 4
         self.life = 5
         
+        self.standing = True
         self.hurting = False
         self.running = False
         self.left = False
@@ -72,6 +81,7 @@ class Player(pg.sprite.Sprite):
         
         self.running_frames = running_frames
         self.hurting_frames = hurting_frames
+        self.standing_frames = standing_frames
 
         self.image_left = player_left_img
        
@@ -117,6 +127,8 @@ class Player(pg.sprite.Sprite):
 
     def animate(self):
         now = pg.time.get_ticks()
+        
+        
         if self.hurting:
             if now - self.last_update > 100:
                 self.last_update = now
@@ -125,8 +137,9 @@ class Player(pg.sprite.Sprite):
                 self.rect = self.image.get_rect()
                 
             if self.last_hurt + 1000 < now:
-                print("end hurt")
                 self.hurting = False
+                
+                
                 
         elif self.running:
             if now - self.last_update > 100:
@@ -138,8 +151,17 @@ class Player(pg.sprite.Sprite):
                 if self.left:
                     self.image = pg.transform.flip(self.image, True, False)
         
+    
+        elif self.standing:
+            if now - self.last_update > 100:
+                self.last_update = now
+                self.current_frame = (self.current_frame + 1) % len(self.standing_frames)
+                self.image = self.standing_frames[self.current_frame]
+                self.rect = self.image.get_rect()
+                
+                
         
-        '''Lag elif standing'''           
+                
         
 
 class Enemy(pg.sprite.Sprite):
