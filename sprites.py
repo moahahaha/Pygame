@@ -200,7 +200,7 @@ class Heart(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self)
         self.image = heart_img
         self.rect = self.image.get_rect()
-        self.pos = vec(randint(2000,3000),randint(10,950))
+        self.pos = vec(randint(5000,6000),randint(10,950))
         self.rect.center = self.pos
         self.speed = 5
         
