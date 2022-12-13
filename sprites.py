@@ -42,14 +42,31 @@ STANDING2 = pg.transform.scale(STANDING2,(70,70))
 
 standing_frames = [STANDING1, STANDING2]
 
-
 '''
 for frame in running_frames:
     frame = pg.transform.scale(frame, (500,500))
 '''
 
+
 enemy_img = pg.image.load("Enemy.png")
 enemy_img = pg.transform.scale(enemy_img,(100,100))
+
+BUNNYRUN1 = pg.image.load("Bunnyrun1.png")
+BUNNYRUN1 = pg.transform.scale(BUNNYRUN1,(90,90))
+BUNNYRUN2 = pg.image.load("Bunnyrun2.png")
+BUNNYRUN2 = pg.transform.scale(BUNNYRUN2,(90,90))
+BUNNYRUN3 = pg.image.load("Bunnyrun3.png")
+BUNNYRUN3 = pg.transform.scale(BUNNYRUN3,(90,90))
+BUNNYRUN4 = pg.image.load("Bunnyrun4.png")
+BUNNYRUN4 = pg.transform.scale(BUNNYRUN4,(90,90))
+BUNNYRUN5 = pg.image.load("Bunnyrun5.png")
+BUNNYRUN5 = pg.transform.scale(BUNNYRUN5,(90,90))
+BUNNYRUN6 = pg.image.load("Bunnyrun6.png")
+BUNNYRUN6 = pg.transform.scale(BUNNYRUN6,(90,90))
+BUNNYRUN7 = pg.image.load("Bunnyrun7.png")
+BUNNYRUN7 = pg.transform.scale(BUNNYRUN7,(90,90))
+
+Bunnyrun_frames = [BUNNYRUN1,BUNNYRUN2,BUNNYRUN3,BUNNYRUN4,BUNNYRUN5,BUNNYRUN6,BUNNYRUN7]
 
 food_img = pg.image.load("hotdog.png")
 food_img = pg.transform.scale(food_img,(60,60))
@@ -57,11 +74,17 @@ food_img = pg.transform.scale(food_img,(60,60))
 heart_img = pg.image.load("heart.png")
 heart_img = pg.transform.scale(heart_img,(50,50))
 
+stone_img = pg.image.load("Rock.png")
+stone_img = pg.transform.scale(stone_img,(20,20))
 
 
 class Player(pg.sprite.Sprite):
-    def __init__(self):
-        pg.sprite.Sprite.__init__(self)
+    def __init__(self, game):
+        self.groups = game.all_sprites
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+
+        self.projectile_speed = 5
 
         self.current_frame = 0
         self.last_update = 0
@@ -78,6 +101,8 @@ class Player(pg.sprite.Sprite):
         self.left = False
         
         self.last_hurt = 0
+        
+        self.attack_direction_x = 0
         
         self.running_frames = running_frames
         self.hurting_frames = hurting_frames
@@ -98,20 +123,40 @@ class Player(pg.sprite.Sprite):
         '''
         keys =pg.key.get_pressed()
         
+        self.standing = True
+        self.running = False        
+        
         if keys[pg.K_w]:
             self.pos.y -= self.speed
             self.running = True
+            self.standing = False
+            
         if keys[pg.K_s]:
             self.pos.y += self.speed
             self.running = True
+            self.standing = False
         if keys[pg.K_d]:
             self.pos.x += self.speed
             self.running = True
             self.left = False
+            self.standing = False
         if keys[pg.K_a]:
             self.pos.x -= self.speed
             self.running = True
             self.left = True
+            self.standing = False
+            
+        #self.attack_direction_x = 0
+        if keys[pg.K_LEFT]:
+            self.attack_direction_x = -self.projectile_speed
+        if keys[pg.K_RIGHT]:
+            self.attack_direction_x = self.projectile_speed
+            
+        if not self.attack_direction_x == 0:
+            if keys[pg.K_SPACE]:
+                self.attack()
+        
+         
 
         if self.pos.x < 40:
             self.pos.x = 40
@@ -124,6 +169,8 @@ class Player(pg.sprite.Sprite):
       
         self.animate()
         self.rect.center = self.pos
+        
+        
 
     def animate(self):
         now = pg.time.get_ticks()
@@ -159,27 +206,72 @@ class Player(pg.sprite.Sprite):
                 self.image = self.standing_frames[self.current_frame]
                 self.rect = self.image.get_rect()
                 
+                if self.left:
+                    self.image = pg.transform.flip(self.image, True, False)
                 
-        
+    def attack(self):
+        Ranged_attack(self.game, self.pos.x, self.pos.y, self.attack_direction_x, 0)  
                 
-        
+
+
+
+class Ranged_attack(pg.sprite.Sprite):
+    def __init__(self, game, x ,y, direction_x, direction_y):
+       self.groups = game.all_sprites, game.projectiles_grp 
+       pg.sprite.Sprite.__init__(self, self.groups)
+       self.game = game
+       self.image = stone_img
+       self.image.fill((255,0,0))
+       self.rect = self.image.get_rect()
+       self.pos = vec(x, y) 
+       self.direction_x = direction_x
+       self.direction_y = direction_y
+       self.rect.center = self.pos   
+       
+    def update(self):
+        self.rect.center = self.pos
+        self.pos.x += self.direction_x     
+        self.pos.y += self.direction_y
+
 
 class Enemy(pg.sprite.Sprite):
     def __init__(self):
         pg.sprite.Sprite.__init__(self)
         self.image = enemy_img
         self.rect = self.image.get_rect()
+        self.last_update = 0
+        self.current_frame = 0
         self.pos = vec(randint(1000,2000),randint(10,950))
         self.rect.center = self.pos
         self.speed = 5
-
+        
+        self.bunnyrun = True
+        
+        self.bunnyrun_frames = Bunnyrun_frames
         
     def update(self):
         self.rect.center = self.pos
-
+        
         self.pos.x -= self.speed
+        
+    
+        self.animate()
+        self.rect.center = self.pos
 
-            
+
+    def animate(self):      
+        now = pg.time.get_ticks()
+        
+        if self.bunnyrun:
+            if now - self.last_update > 100:
+                self.last_update = now
+                self.current_frame = (self.current_frame + 1) % len(self.bunnyrun_frames)
+                self.image = self.bunnyrun_frames[self.current_frame]
+                self.rect = self.image.get_rect()
+                
+                
+                
+                            
 class Food(pg.sprite.Sprite):
     def __init__(self):
         pg.sprite.Sprite.__init__(self)

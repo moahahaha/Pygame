@@ -10,6 +10,8 @@ class Game():
     def __init__(self):
         pg.init()
         
+        
+         
         #rgb
         self.WHITE = (255,255,255)
         self.BLACK = (0,0,0)
@@ -33,13 +35,15 @@ class Game():
     
     
     def new(self):
-        
         self.all_sprites = pg.sprite.Group()
         self.enemy_group = pg.sprite.Group()
         self.food_group = pg.sprite.Group()
         self.heart_group = pg.sprite.Group()
+        self.bird_group = pg.sprite.Group()
+        self.projectiles_grp = pg.sprite.Group()
 
-        self.blueguy = Player()
+        
+        self.blueguy = Player(self)
         
         self.all_sprites.add(self.blueguy)
     
@@ -65,7 +69,7 @@ class Game():
                     
                 
             self.screen.blit(self.bg,(i,0))
-            self.screen.blit(self.bg,(self.WIDTH+1,0))
+            self.screen.blit(self.bg,(self.WIDTH+i,0))
             if (i == -self.WIDTH):
                 self.screen.blit(self.bg,(self.WIDTH+i,0))
                 i = 0
@@ -84,7 +88,7 @@ class Game():
                 self.blueguy.life -= 1
                 if self.blueguy.life <= 0:
                     self.blueguy.kill()
-                    self.blueguy = Player()
+                    self.blueguy = Player(self)
                     self.all_sprites.add(self.blueguy)
                     self.score = 0
                     
@@ -97,6 +101,12 @@ class Game():
                 self.blueguy.life += 1
                 if self.blueguy.life >=  5:
                     self.blueguy.life = 5
+            
+            '''     
+            hits = pg.sprite.spritecollide(self.projectiles_grp, self.enemy_group, True)
+            if hits:
+                self.score += 50
+            '''   
                 
 
 
@@ -111,8 +121,9 @@ class Game():
                 self.all_sprites.add(bunny)
                 self.enemy_group.add(bunny)
                 
-            
+           
         
+                   
         
             for food in self.food_group:
                 if food.pos.x < -100:
