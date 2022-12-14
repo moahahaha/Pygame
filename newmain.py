@@ -23,6 +23,9 @@ class Game():
         self.screen = pg.display.set_mode((self.HEIGHT,self.WIDTH))
         self.bg = pg.image.load("background.jpg")
         self.bg = pg.transform.scale(self.bg, (self.HEIGHT, self.WIDTH))
+        
+        self.ground = pg.image.load("Ground.png")
+        self.ground = pg.transform.scale(self.ground,(1000,300))
 
         self.comic_sans30 = pg.font.SysFont("Comic Sans MS", 30)
   
@@ -52,7 +55,7 @@ class Game():
         self.score = 0
         self.text_player_hp = self.comic_sans30.render(str(self.blueguy.life), False, self.WHITE)  
         self.text_score_hp = self.comic_sans30.render(str(self.score), False,  self.WHITE) 
-    
+        
         
         self.run()  
     
@@ -91,6 +94,7 @@ class Game():
                     self.blueguy = Player(self)
                     self.all_sprites.add(self.blueguy)
                     self.score = 0
+                    self.game_over_loop()
                     
             hits = pg.sprite.spritecollide(self.blueguy, self.food_group, True)
             if hits:
@@ -101,6 +105,11 @@ class Game():
                 self.blueguy.life += 1
                 if self.blueguy.life >=  5:
                     self.blueguy.life = 5
+                    
+            hits = pg.sprite.groupcollide(self.projectiles_grp, self.enemy_group, True, True)
+            if hits:
+                self.score += 50
+            
             
             '''     
             hits = pg.sprite.spritecollide(self.projectiles_grp, self.enemy_group, True)
@@ -153,10 +162,31 @@ class Game():
             self.screen.blit(self.text_player_hp,(10,10))
             self.screen.blit(self.text_score_hp,(900,10))
             
+            
             self.text_player_hp = self.comic_sans30.render(str(self.blueguy.life), False, self.WHITE)  
             self.text_score_hp = self.comic_sans30.render(str(self.score), False,  self.WHITE) 
-        
+            
 
             pg.display.update()
-
+            
+    
+    def game_over_loop(self):
+        
+        self.game_over = True
+        while self.game_over: 
+            self.clock.tick(self.FPS)
+            self.game_over_text = self.comic_sans30.render("                         Game over, press R to restart", False, (self.WHITE))
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    self.game_over = False
+                    
+                if event.type == pg.KEYDOWN:
+                    if event.key == pg.K_r:
+                        self.game_over = False
+            
+            self.screen.fill(self.BLACK)
+            self.screen.blit(self.game_over_text, (40,40))
+            pg.display.update()
+            
+        self.new()
 g = Game()     

@@ -9,6 +9,7 @@ player_img = pg.transform.scale(player_img,(70,70))
 player_left_img = pg.transform.flip(player_img, True, False)
 
 
+
 RUNNING1 = pg.image.load("Run1.png")
 RUNNING1 = pg.transform.scale(RUNNING1,(70,70))
 RUNNING2 = pg.image.load("Run2.png")
@@ -23,6 +24,17 @@ RUNNING6 = pg.image.load("Run6.png")
 RUNNING6 = pg.transform.scale(RUNNING6,(70,70))
 
 running_frames = [RUNNING1, RUNNING2, RUNNING3, RUNNING4, RUNNING5, RUNNING6]
+
+THROW1 = pg.image.load("Throw1.png")
+THROW1 = pg.transform.scale(THROW1,(70,70))
+THROW2 = pg.image.load("Throw2.png")
+THROW2 = pg.transform.scale(THROW2,(70,70))
+THROW3 = pg.image.load("Throw3.png")
+THROW3 = pg.transform.scale(THROW3,(70,70))
+THROW4 = pg.image.load("Throw4.png")
+THROW4 = pg.transform.scale(THROW4,(70,70))
+
+throwing_frames = [THROW1, THROW2, THROW3, THROW4]
 
 HURT1 = pg.image.load("Hurt1.png")
 HURT1 = pg.transform.scale(HURT1,(70,70))
@@ -99,14 +111,17 @@ class Player(pg.sprite.Sprite):
         self.hurting = False
         self.running = False
         self.left = False
+        self.throwing = False
         
         self.last_hurt = 0
+        self.last_throw = 0
         
         self.attack_direction_x = 0
         
         self.running_frames = running_frames
         self.hurting_frames = hurting_frames
         self.standing_frames = standing_frames
+        self.throwing_frames = throwing_frames 
 
         self.image_left = player_left_img
        
@@ -124,8 +139,11 @@ class Player(pg.sprite.Sprite):
         keys =pg.key.get_pressed()
         
         self.standing = True
-        self.running = False        
-        
+        self.running = False 
+        self.throwing = False
+        '''
+        self.pos.y += 2 !!!      
+        '''
         if keys[pg.K_w]:
             self.pos.y -= self.speed
             self.running = True
@@ -149,12 +167,16 @@ class Player(pg.sprite.Sprite):
         #self.attack_direction_x = 0
         if keys[pg.K_LEFT]:
             self.attack_direction_x = -self.projectile_speed
+            self.throwing = True
         if keys[pg.K_RIGHT]:
             self.attack_direction_x = self.projectile_speed
+            self.throwing = True
             
         if not self.attack_direction_x == 0:
             if keys[pg.K_SPACE]:
                 self.attack()
+                self.throwing = True
+                
         
          
 
@@ -186,6 +208,19 @@ class Player(pg.sprite.Sprite):
             if self.last_hurt + 1000 < now:
                 self.hurting = False
                 
+            
+        elif self.throwing:
+            if now - self.last_update > 100:
+                self.last_update = now 
+                self.current_frame = (self.current_frame + 1) % len(self.throwing_frames)
+                self.image = self.throwing_frames[self.current_frame]
+                self.rect = self.image.get_rect()
+                
+            if self.last_throw + 1000 < now:
+                self.throwing = False
+                
+                
+                
                 
                 
         elif self.running:
@@ -208,6 +243,7 @@ class Player(pg.sprite.Sprite):
                 
                 if self.left:
                     self.image = pg.transform.flip(self.image, True, False)
+        
                 
     def attack(self):
         Ranged_attack(self.game, self.pos.x, self.pos.y, self.attack_direction_x, 0)  
