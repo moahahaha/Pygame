@@ -25,7 +25,16 @@ class Game():
         
         self.ground = pg.image.load("Ground.png")
         self.ground = pg.transform.scale(self.ground,(1000,300))
-
+        
+        self.platform = pg.image.load("Ting2.png")
+        self.platform = pg.transform.scale(self.platform,(200,50))
+        
+    
+        self.boks = pg.image.load("Ting1.png")
+        self.boks = pg.transform.scale(self.boks,(150,150))
+        
+        
+        
         self.comic_sans30 = pg.font.SysFont("Comic Sans MS", 30)
   
         self.FPS = 120
@@ -78,6 +87,10 @@ class Game():
             i-=1
 
             self.screen.blit(self.ground,(0,800))
+            self.screen.blit(self.platform,(300,600))
+            self.screen.blit(self.boks,(700,300))
+            self.screen.blit(self.platform,(100,200))
+            
             
             self.all_sprites.update()
             
@@ -108,16 +121,15 @@ class Game():
                     
             hits = pg.sprite.groupcollide(self.projectiles_grp, self.enemy_group, True, True)
             if hits:
-                self.score += 50
+                self.score += 10
             
+            '''
+            collision = pg.sprite.spritecollide(self.blueguy, self.platform, False)
+            if collision:
+                self.check_collision(collision[0])
+            '''
             
-            '''     
-            hits = pg.sprite.spritecollide(self.projectiles_grp, self.enemy_group, True)
-            if hits:
-                self.score += 50
-            '''   
-                
-
+    
 
 
 
@@ -130,9 +142,7 @@ class Game():
                 self.all_sprites.add(bunny)
                 self.enemy_group.add(bunny)
                 
-           
-        
-                   
+
         
             for food in self.food_group:
                 if food.pos.x < -100:
@@ -168,7 +178,38 @@ class Game():
             
 
             pg.display.update()
+    
+    
+    '''
+    def check_collision(self, collided_block):
+        
+        offset = self.player.speed + 1
+        top = collided_block.rect.bottom - self.player.rect.top
+        bottom = collided_block.rect.top - self.player.rect.bottom
+        
+        if top < offset and top > -offset:
+            self.player.rect.top = collided_block.rect.bottom + 1
+            print("collision top")
+        elif bottom > -offset and bottom < offset:
+            self.player.rect.bottom = collided_block.rect.top -1
+            print("collision bottom")   
+    
+        left = collided_block.rect.right - self.player.rect.left
+        right = collided_block.rect.left - self.player.rect.right
+        
+        if left < offset and left > -offset:
+            self.player.rect.left = collided_block.rect.right + 1
+            print("collision left")
+        elif right > -offset and right < offset:
+            self.player.rect.right = collided_block.rect.left - 1
+            print("collision right")  
             
+        self.player.pos.x = self.player.rect.centerx
+        self.player.pos.y = self.player.rect.centery                
+    ''' 
+        
+ 
+     
     
     def game_over_loop(self):
         
