@@ -122,6 +122,24 @@ class Game():
             hits = pg.sprite.groupcollide(self.projectiles_grp, self.enemy_group, True, True)
             if hits:
                 self.score += 10
+
+            hits = pg.sprite.groupcollide(self.projectiles_grp, self.bird_group, True, True)
+            if hits:
+                self.score += 10
+
+            hits = pg.sprite.spritecollide(self.blueguy, self.bird_group, True)
+            if hits:
+                self.blueguy.hurting = True
+                self.blueguy.last_hurt = pg.time.get_ticks()
+                self.score -= 50
+                self.blueguy.life -= 1
+                if self.blueguy.life <= 0:
+                    self.blueguy.kill()
+                    self.blueguy = Player(self)
+                    self.all_sprites.add(self.blueguy)
+                    self.score = 0
+                    self.game_over_loop()
+
             
             '''
             collision = pg.sprite.spritecollide(self.blueguy, self.platform, False)
@@ -137,7 +155,7 @@ class Game():
                 if enemy.pos.x < -100:
                     enemy.kill()
                   
-            if len(self.enemy_group) < 7:
+            if len(self.enemy_group) < 3:
                 bunny = Enemy()
                 self.all_sprites.add(bunny)
                 self.enemy_group.add(bunny)
@@ -146,9 +164,11 @@ class Game():
                 if bird.pos.x < -100:
                     bird.kill()
 
-            if len(self.bird_group) < 2:
+            if len(self.bird_group) < 9:
+                
                 bird = Bird()
                 self.all_sprites.add(bird)
+                self.bird_group.add(bird)
 
 
         

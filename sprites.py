@@ -99,6 +99,28 @@ BUNNYRUN7 = pg.transform.scale(BUNNYRUN7,(90,90))
 
 Bunnyrun_frames = [BUNNYRUN1,BUNNYRUN2,BUNNYRUN3,BUNNYRUN4,BUNNYRUN5,BUNNYRUN6,BUNNYRUN7]
 
+FLY1 = pg.image.load("Fly1.png")
+FLY1 = pg.transform.scale(FLY1,(90,90))
+FLY2= pg.image.load("Fly2.png")
+FLY2= pg.transform.scale(FLY2,(90,90))
+FLY3 = pg.image.load("Fly3.png")
+FLY3 = pg.transform.scale(FLY3,(90,90))
+FLY4 = pg.image.load("Fly4.png")
+FLY4 = pg.transform.scale(FLY4,(90,90))
+FLY5 = pg.image.load("Fly5.png")
+FLY5 = pg.transform.scale(FLY5,(90,90))
+FLY6 = pg.image.load("Fly6.png")
+FLY6 = pg.transform.scale(FLY6,(90,90))
+FLY7 = pg.image.load("Fly7.png")
+FLY7 = pg.transform.scale(FLY7,(90,90))
+FLY8 = pg.image.load("Fly8.png")
+FLY8 = pg.transform.scale(FLY8,(90,90))
+FLY9 = pg.image.load("Fly9.png")
+FLY9 = pg.transform.scale(FLY9,(90,90))
+
+flying_frames = [FLY1, FLY2, FLY3, FLY4, FLY5, FLY6, FLY7, FLY8, FLY9]
+
+
 bird_image = pg.image.load("Fly1.png")
 bird_image =pg.transform.scale(bird_image,(90,90))
 
@@ -320,15 +342,33 @@ class Bird(pg.sprite.Sprite):
         self.image = bird_image
         self.rect = self.image.get_rect()
         self.last_update = 0
-        self.last_frame = 0
-        self.pos = vec(randint(1000,5000),randint(10,800))
+        self.current_frame = 0
+        self.pos = vec(randint(1000,5000),randint(10,750))
         self.rect.center = self.pos
         self.speed = 5
+
+        self.flying = True
+
+        self.flying_frames = flying_frames
 
     def update(self):
         self.rect.center = self.pos
 
         self.pos.x -= self.speed
+
+        self.animate()
+        self.rect.center = self.pos
+
+    def animate(self):      
+        now = pg.time.get_ticks()
+        
+        if self.flying:
+            if now - self.last_update > 100:
+                self.last_update = now
+                self.current_frame = (self.current_frame + 1) % len(self.flying_frames)
+                self.image = self.flying_frames[self.current_frame]
+                self.rect = self.image.get_rect()
+
 
 
 class Enemy(pg.sprite.Sprite):
@@ -338,7 +378,7 @@ class Enemy(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.last_update = 0
         self.current_frame = 0
-        self.pos = vec(randint(1000,5000),randint(10,800))
+        self.pos = vec(randint(1000,5000),(800))
         self.rect.center = self.pos
         self.speed = 5
         
