@@ -54,6 +54,12 @@ STANDING2 = pg.transform.scale(STANDING2,(70,70))
 
 standing_frames = [STANDING1, STANDING2]
 
+
+
+
+
+
+
 '''
 for frame in running_frames:
     frame = pg.transform.scale(frame, (500,500))
