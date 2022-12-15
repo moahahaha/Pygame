@@ -142,6 +142,14 @@ class Game():
                 self.all_sprites.add(bunny)
                 self.enemy_group.add(bunny)
                 
+            for bird in self.bird_group:
+                if bird.pos.x < -100:
+                    bird.kill()
+
+            if len(self.bird_group) < 2:
+                bird = Bird()
+                self.all_sprites.add(bird)
+
 
         
             for food in self.food_group:

@@ -55,9 +55,22 @@ STANDING2 = pg.transform.scale(STANDING2,(70,70))
 standing_frames = [STANDING1, STANDING2]
 
 
+JUMPING1 = pg.image.load("Jump1.png")
+JUMPING1 = pg.transform.scale(JUMPING1,(70,70))
+JUMPING2 = pg.image.load("Jump2.png")
+JUMPING2 = pg.transform.scale(JUMPING2,(70,70))
+JUMPING3 = pg.image.load("Jump3.png")
+JUMPING3 = pg.transform.scale(JUMPING3,(70,70))
+JUMPING4 = pg.image.load("Jump4.png")
+JUMPING4 = pg.transform.scale(JUMPING4,(70,70))
+JUMPING5 = pg.image.load("Jump5.png")
+JUMPING5 = pg.transform.scale(JUMPING5,(70,70))
+JUMPING6 = pg.image.load("Jump6.png")
+JUMPING6 = pg.transform.scale(JUMPING6,(70,70))
+JUMPING7 = pg.image.load("Jump7.png")
+JUMPING7 = pg.transform.scale(JUMPING7,(70,70))
 
-
-
+jumping_frames = [JUMPING1, JUMPING2, JUMPING3, JUMPING4, JUMPING5, JUMPING6, JUMPING7]
 
 
 '''
@@ -85,6 +98,9 @@ BUNNYRUN7 = pg.image.load("Bunnyrun7.png")
 BUNNYRUN7 = pg.transform.scale(BUNNYRUN7,(90,90))
 
 Bunnyrun_frames = [BUNNYRUN1,BUNNYRUN2,BUNNYRUN3,BUNNYRUN4,BUNNYRUN5,BUNNYRUN6,BUNNYRUN7]
+
+bird_image = pg.image.load("Fly1.png")
+bird_image =pg.transform.scale(bird_image,(90,90))
 
 food_img = pg.image.load("hotdog.png")
 food_img = pg.transform.scale(food_img,(60,60))
@@ -130,6 +146,7 @@ class Player(pg.sprite.Sprite):
         self.hurting_frames = hurting_frames
         self.standing_frames = standing_frames
         self.throwing_frames = throwing_frames 
+        self.jumping_frames = jumping_frames
 
         self.image_left = player_left_img
        
@@ -149,6 +166,7 @@ class Player(pg.sprite.Sprite):
         self.standing = True
         self.running = False 
         self.throwing = False
+        self.jumping = False
         
         self.pos.y += 3    
         
@@ -235,8 +253,15 @@ class Player(pg.sprite.Sprite):
             if self.last_throw + 1000 < now:
                 self.throwing = False
                 
-                
-                
+            
+        elif self.jumping:
+            if now - self.last_update > 100:
+                self.last_update = now
+                self.current_frame = (self.current_frame + 1) % len(self.jumping_frames)
+                self.image = self.jumping_frames[self.current_frame] 
+                self.rect = self.image.get_rect()
+
+                  
                 
                 
         elif self.running:
@@ -259,6 +284,9 @@ class Player(pg.sprite.Sprite):
                 
                 if self.left:
                     self.image = pg.transform.flip(self.image, True, False)
+
+
+        
         
                 
     def attack(self):
@@ -284,6 +312,23 @@ class Ranged_attack(pg.sprite.Sprite):
         self.rect.center = self.pos
         self.pos.x += self.direction_x     
         self.pos.y += self.direction_y
+
+
+class Bird(pg.sprite.Sprite):
+    def __init__(self):
+        pg.sprite.Sprite.__init__(self)
+        self.image = bird_image
+        self.rect = self.image.get_rect()
+        self.last_update = 0
+        self.last_frame = 0
+        self.pos = vec(randint(1000,5000),randint(10,800))
+        self.rect.center = self.pos
+        self.speed = 5
+
+    def update(self):
+        self.rect.center = self.pos
+
+        self.pos.x -= self.speed
 
 
 class Enemy(pg.sprite.Sprite):
