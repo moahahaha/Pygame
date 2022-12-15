@@ -77,7 +77,8 @@ class Game():
                 self.screen.blit(self.bg,(self.WIDTH+i,0))
                 i = 0
             i-=1
-        
+
+            self.screen.blit(self.ground,(0,800))
             
             self.all_sprites.update()
             

@@ -182,12 +182,12 @@ class Player(pg.sprite.Sprite):
 
         if self.pos.x < 40:
             self.pos.x = 40
-        if self.pos.x > 960:
-            self.pos.x = 960
+        if self.pos.x > 750:
+            self.pos.x = 950
         if self.pos.y < 40:
             self.pos.y = 40
-        if self.pos.y > 940:
-            self.pos.y = 940
+        if self.pos.y > 800:
+            self.pos.y = 800
       
         self.animate()
         self.rect.center = self.pos
