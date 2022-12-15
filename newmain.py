@@ -26,7 +26,14 @@ class Game():
         
         self.ground = pg.image.load("Ground.png")
         self.ground = pg.transform.scale(self.ground,(1000,300))
-
+        
+        self.platform = pg.image.load("Ting2.png")
+        self.platform = pg.transform.scale(self.platform,(200,50))
+        
+        self.boks = pg.image.load("Ting1.png")
+        self.boks = pg.transform.scale(self.boks,(150,150))
+        
+        
         self.comic_sans30 = pg.font.SysFont("Comic Sans MS", 30)
   
         self.FPS = 120
@@ -79,6 +86,9 @@ class Game():
             i-=1
 
             self.screen.blit(self.ground,(0,800))
+            self.screen.blit(self.platform,(300,600))
+            self.screen.blit(self.boks,(700,300))
+            
             
             self.all_sprites.update()
             
@@ -109,7 +119,7 @@ class Game():
                     
             hits = pg.sprite.groupcollide(self.projectiles_grp, self.enemy_group, True, True)
             if hits:
-                self.score += 50
+                self.score += 10
             
             
             '''     
@@ -131,9 +141,7 @@ class Game():
                 self.all_sprites.add(bunny)
                 self.enemy_group.add(bunny)
                 
-           
-        
-                   
+
         
             for food in self.food_group:
                 if food.pos.x < -100:

@@ -102,7 +102,7 @@ class Player(pg.sprite.Sprite):
         self.last_update = 0
         self.image = player_img
         self.rect = self.image.get_rect()
-        self.pos = vec(100,100)
+        self.pos = vec(100,800)
         self.rect.center = self.pos
         self.speed = 4
         self.life = 5
@@ -112,7 +112,9 @@ class Player(pg.sprite.Sprite):
         self.running = False
         self.left = False
         self.throwing = False
+        self.jumping = False
         
+        self.jump_start = 0
         self.last_hurt = 0
         self.last_throw = 0
         
@@ -141,13 +143,14 @@ class Player(pg.sprite.Sprite):
         self.standing = True
         self.running = False 
         self.throwing = False
-        '''
-        self.pos.y += 2 !!!      
-        '''
+        
+        self.pos.y += 3    
+        
         if keys[pg.K_w]:
-            self.pos.y -= self.speed
-            self.running = True
+            self.pos.y -= 6
+            self.jumping = True
             self.standing = False
+            self.jump_start = 0
             
         if keys[pg.K_s]:
             self.pos.y += self.speed
@@ -177,12 +180,19 @@ class Player(pg.sprite.Sprite):
                 self.attack()
                 self.throwing = True
                 
-        
+        if self.jumping:
+            self.pos.y -= 6
+            self.jump_start += 1
+            
+        else:
+            self.pos.y += 5
+        if self.jump_start > 25:
+            self.jumping = False
          
 
         if self.pos.x < 40:
             self.pos.x = 40
-        if self.pos.x > 750:
+        if self.pos.x > 950:
             self.pos.x = 950
         if self.pos.y < 40:
             self.pos.y = 40
@@ -277,7 +287,7 @@ class Enemy(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.last_update = 0
         self.current_frame = 0
-        self.pos = vec(randint(1000,2000),randint(10,950))
+        self.pos = vec(randint(1000,5000),randint(10,800))
         self.rect.center = self.pos
         self.speed = 5
         
@@ -313,7 +323,7 @@ class Food(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self)
         self.image = food_img
         self.rect = self.image.get_rect()
-        self.pos = vec(randint(1000,2000),randint(10,950))
+        self.pos = vec(randint(1000,2000),randint(10,800))
         self.rect.center = self.pos
         self.speed = 5
     
@@ -328,7 +338,7 @@ class Heart(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self)
         self.image = heart_img
         self.rect = self.image.get_rect()
-        self.pos = vec(randint(5000,6000),randint(10,950))
+        self.pos = vec(randint(5000,6000),randint(10,800))
         self.rect.center = self.pos
         self.speed = 5
         
