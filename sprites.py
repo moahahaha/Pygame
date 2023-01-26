@@ -134,6 +134,8 @@ stone_img = pg.image.load("Rock.png")
 stone_img = pg.transform.scale(stone_img,(20,20))
 
 
+        
+
 class Player(pg.sprite.Sprite):
     def __init__(self, game):
         self.groups = game.all_sprites
@@ -282,6 +284,7 @@ class Player(pg.sprite.Sprite):
                 self.current_frame = (self.current_frame + 1) % len(self.jumping_frames)
                 self.image = self.jumping_frames[self.current_frame] 
                 self.rect = self.image.get_rect()
+                
 
                   
                 
